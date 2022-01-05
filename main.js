@@ -15,15 +15,18 @@ client.on("ready", () => {
 
 wss.on("connection", (ws) => {
 
-    client.on("message", msg => {
-        if (msg.toString().charAt(0) === "!") {
-            ws.send(msg.toString());
-        };
 
-    })
+    client.on("messageCreate", async message => {
+
+        if (message.channel.id !== CHANNEL_ID) return;
+
+        const messageString = message.content.toString();
+
+        if (messageString.charAt(0) === "!") ws.send(messageString);
+    });
 
     ws.on("message", (msg) => {
-        
+
         client.channels.cache.get(CHANNEL_ID).send(msg.toString());
 
     });
